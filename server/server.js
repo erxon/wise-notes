@@ -39,6 +39,8 @@ app.use(
   })
 );
 
+initializePassport(passport);
+
 // Passport
 app.use(
   session({
@@ -59,8 +61,6 @@ app.use(
     },
   })
 );
-
-initializePassport(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
