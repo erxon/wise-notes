@@ -29,7 +29,7 @@ export default function Chat() {
         <div className="flex flex-col items-center h-[700px]">
           <h1 className="text-sm">Ask AI</h1>
           <div className="w-full p-4">
-            {data.data && <Logs chat={data.data} />}
+            <Logs chat={data.data} />
           </div>
           <div className="flex-grow" />
         </div>

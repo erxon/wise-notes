@@ -1,15 +1,16 @@
 import fetcher from "@/lib/fetcher";
-import { MessageCircleQuestion, Trash2Icon } from "lucide-react";
+import { MessageCircleQuestion, PlusIcon, Trash2Icon } from "lucide-react";
 import useSWR, { mutate } from "swr";
 import type { Chat } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   return (
     <div className="grid lg:grid-cols-12">
@@ -19,6 +20,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <p>Ask AI about your notes</p>
         </div>
         <div>
+          <Button
+            onClick={() => navigate("/ask-ai")}
+            variant={"outline"}
+            className="mb-2"
+          >
+            <span>New query</span>
+            <PlusIcon />
+          </Button>
           <History currentChat={id} />
         </div>
       </div>{" "}
@@ -77,11 +86,6 @@ function HistoryItem({
     setMouseOver(false);
   };
 
-  const handleClick = () => {
-    navigate(`/ask-ai/${chat._id}`);
-    window.location.reload();
-  };
-
   const handleDelete = async () => {
     setIsLoading(true);
 
@@ -123,12 +127,12 @@ function HistoryItem({
       onMouseLeave={handleMouseLeave}
       className="flex items-center"
     >
-      <div
-        onClick={handleClick}
+      <Link
+        to={`/ask-ai/${chat._id}`}
         className="p-2 hover:bg-secondary rounded-lg mb-1 grow"
       >
         <p className="grow">{chat.query}</p>
-      </div>
+      </Link>
       {mouseOver && (
         <Button
           disabled={isLoading}

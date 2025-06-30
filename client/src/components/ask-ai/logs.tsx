@@ -5,17 +5,29 @@ import Markdown from "./markdown";
 import type { Chat } from "@/lib/types";
 
 const throttle = throttleBasic({
-  readAheadChars: 5,
-  targetBufferChars: 2,
+  readAheadChars: 2,
+  targetBufferChars: 1,
   adjustPercentage: 0.35,
-  frameLookBackMs: 20000,
-  windowLookBackMs: 10000,
+  frameLookBackMs: 10000,
+  windowLookBackMs: 7000,
 });
 
 export default function Logs({ chat }: { chat: Chat }) {
-  const [thinking, actualAnswer] = chat.answer.split("</think>");
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="bg-gray-100 dark:bg-black dark:outline rounded-full p-3 w-fit self-end">
+        {chat.query}
+      </div>
+      <Answer key={chat._id} answer={chat.answer} />
+    </div>
+  );
+}
 
-  const { isStreamFinished, output } = useStreamExample(actualAnswer);
+function Answer({ answer }: { answer: string }) {
+  const { isStreamFinished, output } = useStreamExample(
+    answer.split("</think>")[1]
+  );
+
   const { blockMatches } = useLLMOutput({
     llmOutput: output,
     blocks: [],
@@ -28,16 +40,11 @@ export default function Logs({ chat }: { chat: Chat }) {
   });
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="bg-gray-100 dark:bg-black dark:outline rounded-full p-3 w-fit self-end">
-        {chat.query}
-      </div>
-      <div>
-        {blockMatches.map((blockMatch, index) => {
-          const Component = blockMatch.block.component;
-          return <Component key={index} blockMatch={blockMatch} />;
-        })}
-      </div>
+    <div>
+      {blockMatches.map((blockMatch, index) => {
+        const Component = blockMatch.block.component;
+        return <Component key={index} blockMatch={blockMatch} />;
+      })}
     </div>
   );
 }
