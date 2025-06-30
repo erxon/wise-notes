@@ -19,6 +19,9 @@ const MongoStore = require("connect-mongo");
 const bin = require("./routes/bin.route");
 
 const app = express();
+
+app.set("trust proxy", 1);
+
 dotenv.config();
 const version = "/api/v1";
 const port = process.env.PORT || 8080;
