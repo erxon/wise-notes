@@ -5,21 +5,52 @@ const logger = require("../utilities/logger.util");
 const createUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
-    const hash = await bcrypt.hash(password, 10);
 
-    const newUser = User({
-      firstName,
-      lastName,
-      email,
-      hash: hash,
-      createdAt: new Date(),
-    });
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await newUser.save();
+    if (existingUser) {
+      if (existingUser.googleId && !existingUser.hash) {
+        // If the user has googleId, allow password setup
 
-    res.status(200).json(user);
+        existingUser.hash = hashedPassword;
+        existingUser.authMethod = "both";
+        await existingUser.save();
+
+        req.login(existingUser, (err) => {
+          if (err)
+            return res.status(400).json({ message: "Something went wrong" });
+          return res
+            .status(200)
+            .json({ message: "User was created successfully" });
+        });
+      } else {
+        return res.status(400).json({
+          message: "User with this email already exists",
+        });
+      }
+    } else {
+      const newUser = new User({
+        email,
+        firstName,
+        lastName,
+        hash: hashedPassword,
+        authMethod: "local",
+      });
+
+      await newUser.save();
+
+      req.login(newUser, (err) => {
+        if (err)
+          return res.status(400).json({ message: "Something went wrong" });
+        return res
+          .status(200)
+          .json({ message: "User was created successfully" });
+      });
+    }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 

@@ -32,18 +32,22 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(helmet());
-app.use(express.json());
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+
 app.use(
   cors({
-    origin: process.env.ORIGIN,
+    origin: [process.env.ORIGIN],
     credentials: true,
   })
 );
 
+<<<<<<< HEAD
 initializePassport(passport);
 
+=======
+app.use(express.json());
+>>>>>>> main
 // Passport
 app.use(
   session({
@@ -51,15 +55,21 @@ app.use(
     resave: false,
     saveUninitialized: false,
     rolling: true,
+    name: "sessionId",
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
       collectionName: "sessions",
       ttl: 1000 * 60 * 60,
     }),
     cookie: {
+<<<<<<< HEAD
       httpOnly: true,
       sameSite: "none",
       secure: true,
+=======
+      sameSite: "lax",
+      httpOnly: false,
+>>>>>>> main
       maxAge: 1000 * 60 * 60,
     },
   })

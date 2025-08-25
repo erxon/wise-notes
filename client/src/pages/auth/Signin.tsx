@@ -11,6 +11,7 @@ import authSchema from "@/lib/schema/auth-schema";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 
 export default function Signin() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function Signin() {
       if (result.status === 200) {
         navigate("/");
       }
-    } catch (error) {
+    } catch {
       form.reset();
       toast.error("An error occured while signing you in.", {
         description:
@@ -51,12 +52,18 @@ export default function Signin() {
     }
   };
 
+  const handleGoogleSignin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/${
+      import.meta.env.VITE_API_VERSION
+    }/auth/google`;
+  };
+
   return (
     <>
       <AuthLayout>
-        <div className="w-[400px] p-4">
+        <div className="md:w-[400px] p-4">
           <LogoLarge />
-          <h1 className="text-xl font-semibold mb-4">Sign-in</h1>
+          <h1 className="font-medium mb-4 text-center">Sign-in</h1>
           <div className="flex flex-col gap-2">
             <Form {...form}>
               <form
@@ -90,11 +97,15 @@ export default function Signin() {
                 <Button type="submit">Sign-in</Button>
               </form>
             </Form>
-            <div className="flex justify-between mb-3">
-              <Link to={"#"} className="text-sm">
+            <Button variant={"outline"} onClick={handleGoogleSignin}>
+              <GoogleIcon />
+              Continue with Google
+            </Button>
+            <div className="flex flex-col items-center mb-3 gap-2">
+              <Link to={"#"} className="text-xs">
                 Forgot password
               </Link>
-              <p className="text-sm">
+              <p className="text-xs text-neutral-500">
                 Do not have an account yet?{" "}
                 <Link to={"/sign-up"} className="text-blue-500">
                   Sign-up
