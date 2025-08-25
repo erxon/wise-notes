@@ -57,8 +57,8 @@ app.use(
       ttl: 1000 * 60 * 60,
     }),
     cookie: {
-      sameSite: "lax",
-      httpOnly: false,
+      sameSite: "none",
+      httpOnly: true,
       maxAge: 1000 * 60 * 60,
     },
   })
