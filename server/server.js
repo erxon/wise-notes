@@ -42,12 +42,7 @@ app.use(
   })
 );
 
-<<<<<<< HEAD
-initializePassport(passport);
-
-=======
 app.use(express.json());
->>>>>>> main
 // Passport
 app.use(
   session({
@@ -62,18 +57,14 @@ app.use(
       ttl: 1000 * 60 * 60,
     }),
     cookie: {
-<<<<<<< HEAD
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-=======
       sameSite: "lax",
       httpOnly: false,
->>>>>>> main
       maxAge: 1000 * 60 * 60,
     },
   })
 );
+
+initializePassport(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
